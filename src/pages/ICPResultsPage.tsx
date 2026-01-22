@@ -1,57 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { analyzeICP } from '../services/aiService';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Target, TrendingUp, AlertCircle } from 'lucide-react';
+import { TrendingUp, AlertCircle, Download, History } from 'lucide-react';
 
 const ICPResultsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { state, setICPResults } = useAppContext();
+  const { state, setICPResults, addAnalysisToHistory } = useAppContext();
   const [loading, setLoading] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
+    if (state.enrichedData.length === 0) {
+      // Don't auto-navigate, just show empty state
+      setLoading(false);
+      return;
+    }
+
     if (state.icpResults.length > 0) {
       setLoading(false);
       return;
     }
 
-    setTimeout(() => {
-      const results = [
-        {
-          id: 'icp-1',
-          name: 'Enterprise Tech Leaders',
-          confidence: 92,
-          tags: ['C-Level', 'Technology', '1000+ employees', 'High Engagement'],
-          whyPerforms: 'This segment shows 3x higher conversion rates with strong engagement metrics. Decision-makers in large tech companies have clear budget authority and immediate need for solutions.',
-          whoToDeprioritize: 'Individual contributors and companies under 500 employees show lower conversion potential in this segment.',
-          isTop: true,
-        },
-        {
-          id: 'icp-2',
-          name: 'Mid-Market Finance Directors',
-          confidence: 85,
-          tags: ['Director', 'Finance', '200-1000 employees', 'Medium Engagement'],
-          whyPerforms: 'Strong ROI focus and clear pain points. This segment has shorter sales cycles and predictable buying patterns with consistent quarterly budgets.',
-          whoToDeprioritize: 'Companies in early-stage growth or those with limited financial planning resources.',
-        },
-        {
-          id: 'icp-3',
-          name: 'Healthcare VPs',
-          confidence: 78,
-          tags: ['VP', 'Healthcare', '500+ employees', 'Growing Engagement'],
-          whyPerforms: 'Increasing digital transformation initiatives and regulatory compliance needs drive demand. Strong referral potential within the industry.',
-          whoToDeprioritize: 'Small clinics and practices without dedicated IT or operations leadership.',
-        },
-      ];
-      
-      setICPResults(results);
-      setLoading(false);
-    }, 2000);
+    performAnalysis();
   }, []);
 
-  if (loading) {
+  const performAnalysis = async () => {
+    try {
+      const analysis = await analyzeICP(state.enrichedData);
+      
+      const results = analysis.icps.map((icp, index) => ({
+        id: `icp-${index + 1}`,
+        name: icp.name,
+        confidence: icp.confidence,
+        tags: icp.tags,
+        whyPerforms: icp.whyPerforms,
+        whoToDeprioritize: icp.whoToDeprioritize,
+        isTop: index === 0,
+      }));
+
+      setICPResults(results);
+      
+      addAnalysisToHistory({
+        id: Date.now().toString(),
+        timestamp: Date.now(),
+        emailCount: state.enrichedData.length,
+        topICP: results[0].name,
+      });
+
+      setLoading(false);
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      setLoading(false);
+    }
+  };
+
+  const exportToPDF = () => {
+    const content = state.icpResults.map(icp => 
+      `${icp.name}\nConfidence: ${icp.confidence}%\nTags: ${icp.tags.join(', ')}\n\nWhy it performs:\n${icp.whyPerforms}\n\nWho to deprioritize:\n${icp.whoToDeprioritize}\n\n---\n\n`
+    ).join('');
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `icp-analysis-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  if (loading && state.enrichedData.length > 0) {
     return (
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6">
         <Card className="w-full max-w-2xl p-12 bg-background border border-border shadow-md">
@@ -59,7 +80,7 @@ const ICPResultsPage: React.FC = () => {
             <div className="text-center space-y-2">
               <h2 className="text-h2 font-semibold text-foreground">Analyzing Your ICP</h2>
               <p className="text-body text-gray-600">
-                Our AI is identifying your highest-performing customer segments
+                AI is identifying your highest-performing customer segments
               </p>
             </div>
             
@@ -72,22 +93,122 @@ const ICPResultsPage: React.FC = () => {
     );
   }
 
+  if (state.enrichedData.length === 0) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6">
+        <Card className="w-full max-w-2xl p-12 bg-background border border-border shadow-md text-center">
+          <h2 className="text-h2 font-semibold text-foreground mb-4">No Enriched Data Available</h2>
+          <p className="text-body text-gray-600 mb-6">
+            Please enrich your data first before generating ICP insights.
+          </p>
+          <Button
+            onClick={() => navigate('/input')}
+            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover"
+          >
+            Go to Data Input
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  if (state.icpResults.length === 0) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6">
+        <Card className="w-full max-w-2xl p-12 bg-background border border-border shadow-md text-center">
+          <h2 className="text-h2 font-semibold text-foreground mb-4">No ICP Results Yet</h2>
+          <p className="text-body text-gray-600 mb-6">
+            Click below to analyze your enriched data and discover your ICPs.
+          </p>
+          <Button
+            onClick={performAnalysis}
+            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover"
+          >
+            Analyze Now
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  const previousAnalysis = state.analysisHistory[1];
+  const drift = previousAnalysis && state.icpResults[0] 
+    ? state.icpResults[0].name !== previousAnalysis.topICP 
+    : false;
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-h1 font-semibold text-foreground">Your Ideal Customer Profiles</h1>
           <p className="text-body-lg text-gray-600 max-w-3xl mx-auto">
-            Based on your enriched data, we've identified the customer segments most likely to convert and deliver long-term value
+            Based on {state.enrichedData.length} enriched contacts, AI has identified the customer segments most likely to convert and deliver long-term value
           </p>
+          
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <Button
+              onClick={exportToPDF}
+              variant="outline"
+              className="h-10 px-6 bg-background text-foreground border-border hover:bg-gray-100"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export Analysis
+            </Button>
+            
+            {state.analysisHistory.length > 0 && (
+              <Button
+                onClick={() => setShowHistory(!showHistory)}
+                variant="outline"
+                className="h-10 px-6 bg-background text-foreground border-border hover:bg-gray-100"
+              >
+                <History className="w-4 h-4 mr-2" />
+                History ({state.analysisHistory.length})
+              </Button>
+            )}
+          </div>
+
+          {drift && (
+            <Card className="p-4 bg-warning/10 border-warning/20 max-w-2xl mx-auto">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-warning" />
+                <div className="text-left">
+                  <p className="text-body-sm font-semibold text-warning-foreground">ICP Drift Detected</p>
+                  <p className="text-body-sm text-gray-700">
+                    Your top ICP has changed from "{previousAnalysis.topICP}" to "{state.icpResults[0].name}"
+                  </p>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
+
+        {showHistory && state.analysisHistory.length > 0 && (
+          <Card className="p-6 bg-background border border-border">
+            <h3 className="text-h4 font-semibold text-foreground mb-4">Analysis History</h3>
+            <div className="space-y-3">
+              {state.analysisHistory.map((analysis) => (
+                <div key={analysis.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                  <div>
+                    <p className="text-body-sm font-medium text-foreground">{analysis.topICP}</p>
+                    <p className="text-body-sm text-gray-600">
+                      {analysis.emailCount} contacts analyzed
+                    </p>
+                  </div>
+                  <p className="text-body-sm text-gray-600">
+                    {new Date(analysis.timestamp).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {state.icpResults.map((icp, index) => (
             <Card
               key={icp.id}
-              className={`p-8 bg-background border transition-all duration-normal hover:shadow-lg hover:-translate-y-1 ${
-                icp.isTop ? 'border-primary border-2' : 'border-border'
+              className={`p-8 bg-background border transition-all duration-normal hover:shadow-xl hover:-translate-y-1 ${
+                icp.isTop ? 'border-primary border-2 shadow-lg' : 'border-border'
               }`}
             >
               <div className="space-y-6">

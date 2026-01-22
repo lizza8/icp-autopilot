@@ -5,7 +5,7 @@ import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { useToast } from '../hooks/use-toast';
-import { Upload, Mail } from 'lucide-react';
+import { Upload, Mail, Sparkles } from 'lucide-react';
 
 const DataInputPage: React.FC = () => {
   const navigate = useNavigate();
@@ -103,10 +103,16 @@ const DataInputPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-h1 font-semibold text-foreground">Import Your Data</h1>
-          <p className="text-body-lg text-gray-600">
-            Upload a CSV file or paste email addresses to begin enrichment
+        <div className="text-center space-y-3">
+          <div className="flex items-center justify-center gap-2">
+            <Sparkles className="w-8 h-8 text-primary" />
+            <h1 className="text-h1 font-semibold text-foreground">Discover Your ICP</h1>
+          </div>
+          <p className="text-body-lg text-gray-600 max-w-2xl mx-auto">
+            Upload your user data and let AI automatically identify your highest-value customer segments
+          </p>
+          <p className="text-body-sm text-gray-500">
+            Powered by real-time enrichment and AI analysis
           </p>
         </div>
 
@@ -177,7 +183,7 @@ const DataInputPage: React.FC = () => {
               
               {emailCount > 0 && (
                 <div className="flex items-center justify-between p-3 bg-info/10 border border-info/20 rounded-md">
-                  <span className="text-body-sm text-info">
+                  <span className="text-body-sm text-info font-medium">
                     {emailCount} unique email{emailCount !== 1 ? 's' : ''} detected
                   </span>
                 </div>
@@ -192,7 +198,7 @@ const DataInputPage: React.FC = () => {
             disabled={emailCount === 0}
             className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
           >
-            Start Enrichment
+            Start Enrichment & Analysis
           </Button>
         </div>
       </div>

@@ -4,11 +4,10 @@ import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 const steps = [
-  { path: '/setup', label: 'Setup', step: 1 },
-  { path: '/input', label: 'Data Input', step: 2 },
-  { path: '/enrichment', label: 'Enrichment', step: 3 },
-  { path: '/icp-results', label: 'ICP Results', step: 4 },
-  { path: '/actions', label: 'Actions', step: 5 },
+  { path: '/input', label: 'Data Input', step: 1 },
+  { path: '/enrichment', label: 'Enrichment', step: 2 },
+  { path: '/icp-results', label: 'ICP Results', step: 3 },
+  { path: '/actions', label: 'Actions', step: 4 },
 ];
 
 const NavigationBar: React.FC = () => {
@@ -21,7 +20,7 @@ const NavigationBar: React.FC = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link to="/setup" className="text-h3 font-semibold text-foreground">
+          <Link to="/input" className="text-h3 font-semibold text-foreground">
             ICP Autopilot
           </Link>
           

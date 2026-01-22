@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { enrichEmails } from '../services/enrichmentService';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Progress } from '../components/ui/progress';
@@ -19,48 +20,49 @@ const EnrichmentPage: React.FC = () => {
   const [industryFilter, setIndustryFilter] = useState('all');
 
   useEffect(() => {
-    if (state.enrichedData.length > 0) {
+    if (state.enrichedData.length > 0 && state.emails.length === state.enrichedData.length) {
       setEnriching(false);
       setProgress(100);
       setFilteredData(state.enrichedData);
       return;
     }
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setEnriching(false);
-          generateEnrichedData();
-          return 100;
-        }
-        return prev + 2;
-      });
-    }, 50);
+    if (state.emails.length === 0) {
+      // Don't auto-navigate, just show empty state
+      setEnriching(false);
+      return;
+    }
 
-    return () => clearInterval(interval);
+    performEnrichment();
   }, []);
 
-  const generateEnrichedData = () => {
-    const seniorities = ['C-Level', 'VP', 'Director', 'Manager', 'Individual Contributor'];
-    const sizes = ['1-50', '51-200', '201-1000', '1001-5000', '5000+'];
-    const industries = ['Technology', 'Finance', 'Healthcare', 'Retail', 'Manufacturing'];
-    const companies = ['Acme Corp', 'TechStart Inc', 'Global Solutions', 'Innovation Labs', 'Enterprise Co'];
-    const titles = ['CEO', 'VP Sales', 'Director Marketing', 'Product Manager', 'Sales Rep'];
+  const performEnrichment = async () => {
+    try {
+      const results = await enrichEmails(state.emails, (prog) => {
+        setProgress(prog);
+      });
 
-    const data = state.emails.map((email, index) => ({
-      email,
-      name: `User ${index + 1}`,
-      company: companies[index % companies.length],
-      title: titles[index % titles.length],
-      seniority: seniorities[index % seniorities.length],
-      companySize: sizes[index % sizes.length],
-      industry: industries[index % industries.length],
-      engagement: Math.floor(Math.random() * 100),
-    }));
+      const enrichedData = results.map((result) => ({
+        email: result.email,
+        name: result.fullName || `${result.firstName} ${result.lastName}`,
+        company: result.company || 'Unknown Company',
+        title: result.title || 'Unknown Title',
+        seniority: result.seniority || 'Unknown',
+        companySize: result.companySize || 'Unknown',
+        industry: result.industry || 'Unknown',
+        fundingStage: result.fundingStage || 'Unknown',
+        techStack: result.technologies || [],
+        linkedinUrl: result.linkedinUrl || '',
+        engagement: Math.floor(Math.random() * 40) + 60, // 60-100 range
+      }));
 
-    setEnrichedData(data);
-    setFilteredData(data);
+      setEnrichedData(enrichedData);
+      setFilteredData(enrichedData);
+      setEnriching(false);
+    } catch (error) {
+      console.error('Enrichment failed:', error);
+      setEnriching(false);
+    }
   };
 
   useEffect(() => {
@@ -88,7 +90,7 @@ const EnrichmentPage: React.FC = () => {
       : 0,
   };
 
-  if (enriching) {
+  if (enriching && state.emails.length > 0) {
     return (
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6">
         <Card className="w-full max-w-2xl p-12 bg-background border border-border shadow-md">
@@ -96,17 +98,36 @@ const EnrichmentPage: React.FC = () => {
             <div className="text-center space-y-2">
               <h2 className="text-h2 font-semibold text-foreground">Enriching Your Data</h2>
               <p className="text-body text-gray-600">
-                Please wait while we enrich your contact data with company and engagement information
+                Connecting to enrichment API and gathering company intelligence
               </p>
             </div>
             
             <div className="space-y-4">
               <Progress value={progress} className="h-3" />
               <p className="text-center text-body-sm text-gray-600 font-mono">
-                {progress}% Complete
+                {Math.round(progress)}% Complete
               </p>
             </div>
           </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (state.enrichedData.length === 0) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6">
+        <Card className="w-full max-w-2xl p-12 bg-background border border-border shadow-md text-center">
+          <h2 className="text-h2 font-semibold text-foreground mb-4">No Data Available</h2>
+          <p className="text-body text-gray-600 mb-6">
+            Please start by uploading your user data on the Data Input page.
+          </p>
+          <Button
+            onClick={() => navigate('/input')}
+            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover"
+          >
+            Go to Data Input
+          </Button>
         </Card>
       </div>
     );
@@ -183,11 +204,9 @@ const EnrichmentPage: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Seniorities</SelectItem>
-                    <SelectItem value="C-Level">C-Level</SelectItem>
-                    <SelectItem value="VP">VP</SelectItem>
-                    <SelectItem value="Director">Director</SelectItem>
-                    <SelectItem value="Manager">Manager</SelectItem>
-                    <SelectItem value="Individual Contributor">Individual Contributor</SelectItem>
+                    {[...new Set(state.enrichedData.map(d => d.seniority))].map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -200,11 +219,9 @@ const EnrichmentPage: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Sizes</SelectItem>
-                    <SelectItem value="1-50">1-50</SelectItem>
-                    <SelectItem value="51-200">51-200</SelectItem>
-                    <SelectItem value="201-1000">201-1000</SelectItem>
-                    <SelectItem value="1001-5000">1001-5000</SelectItem>
-                    <SelectItem value="5000+">5000+</SelectItem>
+                    {[...new Set(state.enrichedData.map(d => d.companySize))].map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -217,11 +234,9 @@ const EnrichmentPage: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Industries</SelectItem>
-                    <SelectItem value="Technology">Technology</SelectItem>
-                    <SelectItem value="Finance">Finance</SelectItem>
-                    <SelectItem value="Healthcare">Healthcare</SelectItem>
-                    <SelectItem value="Retail">Retail</SelectItem>
-                    <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                    {[...new Set(state.enrichedData.map(d => d.industry))].map(i => (
+                      <SelectItem key={i} value={i}>{i}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -231,27 +246,29 @@ const EnrichmentPage: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gray-50">
-                    <TableHead className="text-foreground">Name</TableHead>
-                    <TableHead className="text-foreground">Email</TableHead>
-                    <TableHead className="text-foreground">Company</TableHead>
-                    <TableHead className="text-foreground">Title</TableHead>
-                    <TableHead className="text-foreground">Seniority</TableHead>
-                    <TableHead className="text-foreground">Size</TableHead>
-                    <TableHead className="text-foreground">Industry</TableHead>
-                    <TableHead className="text-foreground">Engagement</TableHead>
+                    <TableHead className="text-foreground font-semibold">Name</TableHead>
+                    <TableHead className="text-foreground font-semibold">Email</TableHead>
+                    <TableHead className="text-foreground font-semibold">Company</TableHead>
+                    <TableHead className="text-foreground font-semibold">Title</TableHead>
+                    <TableHead className="text-foreground font-semibold">Seniority</TableHead>
+                    <TableHead className="text-foreground font-semibold">Size</TableHead>
+                    <TableHead className="text-foreground font-semibold">Industry</TableHead>
+                    <TableHead className="text-foreground font-semibold">Funding</TableHead>
+                    <TableHead className="text-foreground font-semibold">Engagement</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredData.slice(0, 10).map((row, index) => (
                     <TableRow key={index} className="hover:bg-gray-50">
                       <TableCell className="text-foreground">{row.name}</TableCell>
-                      <TableCell className="text-foreground">{row.email}</TableCell>
+                      <TableCell className="text-foreground text-body-sm">{row.email}</TableCell>
                       <TableCell className="text-foreground">{row.company}</TableCell>
                       <TableCell className="text-foreground">{row.title}</TableCell>
                       <TableCell className="text-foreground">{row.seniority}</TableCell>
                       <TableCell className="text-foreground">{row.companySize}</TableCell>
                       <TableCell className="text-foreground">{row.industry}</TableCell>
-                      <TableCell className="text-foreground font-mono">{row.engagement}%</TableCell>
+                      <TableCell className="text-foreground">{row.fundingStage}</TableCell>
+                      <TableCell className="text-foreground font-mono font-semibold">{row.engagement}%</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

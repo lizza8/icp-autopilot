@@ -1,14 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AppState {
-  apiKeys: {
-    enrichment: string;
-    ai: string;
-  };
   emails: string[];
   enrichedData: EnrichedUser[];
   icpResults: ICPResult[];
   activatedActions: Record<string, boolean>;
+  analysisHistory: AnalysisHistory[];
 }
 
 interface EnrichedUser {
@@ -19,6 +16,9 @@ interface EnrichedUser {
   seniority: string;
   companySize: string;
   industry: string;
+  fundingStage: string;
+  techStack: string[];
+  linkedinUrl: string;
   engagement: number;
 }
 
@@ -32,14 +32,21 @@ interface ICPResult {
   isTop?: boolean;
 }
 
+interface AnalysisHistory {
+  id: string;
+  timestamp: number;
+  emailCount: number;
+  topICP: string;
+}
+
 interface AppContextType {
   state: AppState;
-  setApiKeys: (keys: { enrichment: string; ai: string }) => void;
   setEmails: (emails: string[]) => void;
   setEnrichedData: (data: EnrichedUser[]) => void;
   setICPResults: (results: ICPResult[]) => void;
   toggleAction: (actionId: string) => void;
   activateAllActions: () => void;
+  addAnalysisToHistory: (analysis: AnalysisHistory) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -54,30 +61,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         return JSON.parse(stored);
       } catch {
         return {
-          apiKeys: { enrichment: '', ai: '' },
           emails: [],
           enrichedData: [],
           icpResults: [],
           activatedActions: {},
+          analysisHistory: [],
         };
       }
     }
     return {
-      apiKeys: { enrichment: '', ai: '' },
       emails: [],
       enrichedData: [],
       icpResults: [],
       activatedActions: {},
+      analysisHistory: [],
     };
   });
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
-
-  const setApiKeys = (keys: { enrichment: string; ai: string }) => {
-    setState((prev) => ({ ...prev, apiKeys: keys }));
-  };
 
   const setEmails = (emails: string[]) => {
     setState((prev) => ({ ...prev, emails }));
@@ -112,16 +115,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setState((prev) => ({ ...prev, activatedActions: activated }));
   };
 
+  const addAnalysisToHistory = (analysis: AnalysisHistory) => {
+    setState((prev) => ({
+      ...prev,
+      analysisHistory: [analysis, ...prev.analysisHistory].slice(0, 10),
+    }));
+  };
+
   return (
     <AppContext.Provider
       value={{
         state,
-        setApiKeys,
         setEmails,
         setEnrichedData,
         setICPResults,
         toggleAction,
         activateAllActions,
+        addAnalysisToHistory,
       }}
     >
       {children}
@@ -137,4 +147,4 @@ export const useAppContext = () => {
   return context;
 };
 
-export type { EnrichedUser, ICPResult };
+export type { EnrichedUser, ICPResult, AnalysisHistory };
