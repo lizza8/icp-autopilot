@@ -14,13 +14,12 @@ const ICPResultsPage: React.FC = () => {
   const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
-    if (state.enrichedData.length === 0) {
-      // Don't auto-navigate, just show empty state
+    if (state.icpResults.length > 0) {
       setLoading(false);
       return;
     }
 
-    if (state.icpResults.length > 0) {
+    if (state.enrichedData.length === 0) {
       setLoading(false);
       return;
     }
@@ -29,6 +28,7 @@ const ICPResultsPage: React.FC = () => {
   }, []);
 
   const performAnalysis = async () => {
+    setLoading(true);
     try {
       const analysis = await analyzeICP(state.enrichedData);
       
@@ -53,7 +53,6 @@ const ICPResultsPage: React.FC = () => {
 
       setLoading(false);
     } catch (error) {
-      console.error('Analysis failed:', error);
       setLoading(false);
     }
   };
@@ -131,8 +130,8 @@ const ICPResultsPage: React.FC = () => {
     );
   }
 
-  const previousAnalysis = state.analysisHistory[1];
-  const drift = previousAnalysis && state.icpResults[0] 
+  const previousAnalysis = state.analysisHistory && state.analysisHistory.length > 1 ? state.analysisHistory[1] : null;
+  const drift = previousAnalysis && state.icpResults && state.icpResults[0] 
     ? state.icpResults[0].name !== previousAnalysis.topICP 
     : false;
 
@@ -155,7 +154,7 @@ const ICPResultsPage: React.FC = () => {
               Export Analysis
             </Button>
             
-            {state.analysisHistory.length > 0 && (
+            {state.analysisHistory && state.analysisHistory.length > 0 && (
               <Button
                 onClick={() => setShowHistory(!showHistory)}
                 variant="outline"
@@ -182,7 +181,7 @@ const ICPResultsPage: React.FC = () => {
           )}
         </div>
 
-        {showHistory && state.analysisHistory.length > 0 && (
+        {showHistory && state.analysisHistory && state.analysisHistory.length > 0 && (
           <Card className="p-6 bg-background border border-border">
             <h3 className="text-h4 font-semibold text-foreground mb-4">Analysis History</h3>
             <div className="space-y-3">

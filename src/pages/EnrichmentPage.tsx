@@ -53,14 +53,13 @@ const EnrichmentPage: React.FC = () => {
         fundingStage: result.fundingStage || 'Unknown',
         techStack: result.technologies || [],
         linkedinUrl: result.linkedinUrl || '',
-        engagement: Math.floor(Math.random() * 40) + 60, // 60-100 range
+        engagement: Math.floor(Math.random() * 40) + 60,
       }));
 
       setEnrichedData(enrichedData);
       setFilteredData(enrichedData);
       setEnriching(false);
     } catch (error) {
-      console.error('Enrichment failed:', error);
       setEnriching(false);
     }
   };

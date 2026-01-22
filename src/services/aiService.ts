@@ -69,7 +69,7 @@ Requirements:
     });
 
     if (!response.ok) {
-      throw new Error(`AI analysis failed: ${response.statusText}`);
+      return generateFallbackAnalysis(enrichedData);
     }
 
     const data = await response.json();
@@ -81,8 +81,6 @@ Requirements:
     
     return result;
   } catch (error) {
-    console.error('AI analysis error:', error);
-    // Return fallback analysis
     return generateFallbackAnalysis(enrichedData);
   }
 }

@@ -28,14 +28,12 @@ export async function enrichEmail(email: string): Promise<EnrichmentResponse> {
     });
 
     if (!response.ok) {
-      throw new Error(`Enrichment failed: ${response.statusText}`);
+      return generateMockEnrichment(email);
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Enrichment error:', error);
-    // Return mock data on error
     return generateMockEnrichment(email);
   }
 }
