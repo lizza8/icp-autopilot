@@ -1,0 +1,122 @@
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(220, 10%, 85%)",
+        input: "hsl(220, 10%, 80%)",
+        ring: "hsl(250, 80%, 60%)",
+        background: "hsl(0, 0%, 100%)",
+        foreground: "hsl(230, 15%, 15%)",
+        primary: {
+          DEFAULT: "hsl(250, 80%, 60%)",
+          foreground: "hsl(0, 0%, 100%)",
+          hover: "hsl(250, 80%, 50%)",
+          active: "hsl(250, 80%, 40%)",
+        },
+        secondary: {
+          DEFAULT: "hsl(250, 80%, 95%)",
+          foreground: "hsl(250, 80%, 30%)",
+          hover: "hsl(250, 80%, 90%)",
+          active: "hsl(250, 80%, 85%)",
+        },
+        tertiary: {
+          DEFAULT: "hsl(0, 0%, 98%)",
+          foreground: "hsl(230, 15%, 25%)",
+        },
+        accent: {
+          DEFAULT: "hsl(180, 70%, 45%)",
+          foreground: "hsl(0, 0%, 100%)",
+        },
+        success: {
+          DEFAULT: "hsl(160, 70%, 40%)",
+          foreground: "hsl(0, 0%, 100%)",
+        },
+        warning: {
+          DEFAULT: "hsl(40, 90%, 55%)",
+          foreground: "hsl(30, 15%, 20%)",
+        },
+        error: {
+          DEFAULT: "hsl(0, 80%, 60%)",
+          foreground: "hsl(0, 0%, 100%)",
+        },
+        info: {
+          DEFAULT: "hsl(220, 75%, 60%)",
+          foreground: "hsl(0, 0%, 100%)",
+        },
+        gray: {
+          50: "hsl(210, 20%, 98%)",
+          100: "hsl(210, 20%, 95%)",
+          200: "hsl(210, 15%, 90%)",
+          300: "hsl(210, 10%, 80%)",
+          400: "hsl(210, 10%, 65%)",
+          500: "hsl(210, 8%, 55%)",
+          600: "hsl(210, 8%, 40%)",
+          700: "hsl(210, 9%, 30%)",
+          800: "hsl(210, 10%, 20%)",
+          900: "hsl(210, 15%, 10%)",
+        },
+      },
+      fontFamily: {
+        sans: ['"DM Sans"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+      },
+      fontSize: {
+        'h1': ['32px', { lineHeight: '1.2', fontWeight: '500' }],
+        'h2': ['24px', { lineHeight: '1.2', fontWeight: '500' }],
+        'h3': ['20px', { lineHeight: '1.2', fontWeight: '500' }],
+        'h4': ['18px', { lineHeight: '1.2', fontWeight: '500' }],
+        'body-lg': ['17px', { lineHeight: '1.5', fontWeight: '400' }],
+        'body': ['15px', { lineHeight: '1.6', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '1.6', fontWeight: '400' }],
+        'caption': ['12px', { lineHeight: '1.4', fontWeight: '400' }],
+      },
+      spacing: {
+        '1': '4px',
+        '2': '8px',
+        '4': '16px',
+        '6': '24px',
+        '8': '32px',
+        '12': '48px',
+        '16': '64px',
+        'xs': '8px',
+        'sm': '16px',
+        'md': '24px',
+        'lg': '32px',
+        'xl': '48px',
+        '2xl': '64px',
+      },
+      borderRadius: {
+        'sm': '4px',
+        'md': '8px',
+        'lg': '12px',
+        'full': '9999px',
+      },
+      boxShadow: {
+        'sm': '0 1px 2px hsl(0, 0%, 0%, 0.05)',
+        'md': '0 2px 6px hsl(0, 0%, 0%, 0.08)',
+        'lg': '0 4px 12px hsl(0, 0%, 0%, 0.1)',
+        'xl': '0 8px 24px hsl(0, 0%, 0%, 0.12)',
+      },
+      transitionDuration: {
+        'fast': '150ms',
+        'normal': '300ms',
+        'slow': '600ms',
+      },
+      transitionTimingFunction: {
+        'ease-in': 'cubic-bezier(0.42, 0, 1, 1)',
+        'ease-out': 'cubic-bezier(0, 0, 0.58, 1)',
+        'ease-in-out': 'cubic-bezier(0.42, 0, 0.58, 1)',
+      },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(135deg, hsl(250, 80%, 60%), hsl(260, 75%, 65%))',
+        'gradient-secondary': 'linear-gradient(135deg, hsl(250, 80%, 96%), hsl(250, 80%, 92%))',
+        'gradient-accent': 'linear-gradient(135deg, hsl(180, 70%, 50%), hsl(210, 70%, 55%))',
+      },
+    },
+  },
+  plugins: [],
+}
