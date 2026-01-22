@@ -135,7 +135,7 @@ const EnrichmentPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="space-y-8">
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-2 animate-fade-in-up">
           <h1 className="text-h1 font-semibold text-foreground">Enriched Data Overview</h1>
           <p className="text-body-lg text-gray-600">
             Review your enriched dataset before generating ICP insights
@@ -143,7 +143,7 @@ const EnrichmentPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="p-6 bg-background border border-border">
+          <Card className="p-6 bg-background border border-border animate-fade-in-up delay-100 hover:shadow-lg hover:scale-105 transition-all duration-normal">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
                 <Users className="w-6 h-6 text-secondary-foreground" />
@@ -155,7 +155,7 @@ const EnrichmentPage: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="p-6 bg-background border border-border">
+          <Card className="p-6 bg-background border border-border animate-fade-in-up delay-200 hover:shadow-lg hover:scale-105 transition-all duration-normal">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
                 <Building2 className="w-6 h-6 text-secondary-foreground" />
@@ -167,7 +167,7 @@ const EnrichmentPage: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="p-6 bg-background border border-border">
+          <Card className="p-6 bg-background border border-border animate-fade-in-up delay-300 hover:shadow-lg hover:scale-105 transition-all duration-normal">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
                 <Briefcase className="w-6 h-6 text-secondary-foreground" />
@@ -179,7 +179,7 @@ const EnrichmentPage: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="p-6 bg-background border border-border">
+          <Card className="p-6 bg-background border border-border animate-fade-in-up delay-400 hover:shadow-lg hover:scale-105 transition-all duration-normal">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-secondary-foreground" />
@@ -192,7 +192,7 @@ const EnrichmentPage: React.FC = () => {
           </Card>
         </div>
 
-        <Card className="p-6 bg-background border border-border">
+        <Card className="p-6 bg-background border border-border animate-fade-in-up delay-500 hover:shadow-lg transition-all duration-normal">
           <div className="space-y-6">
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
@@ -282,10 +282,10 @@ const EnrichmentPage: React.FC = () => {
           </div>
         </Card>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center animate-fade-in-up">
           <Button
             onClick={() => navigate('/icp-results')}
-            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover"
+            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover hover:scale-105 transition-all duration-normal hover:shadow-xl animate-pulse-glow"
           >
             Discover ICP Insights
           </Button>

@@ -6,38 +6,38 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        border: "hsl(220, 10%, 85%)",
-        input: "hsl(220, 10%, 80%)",
-        ring: "hsl(250, 80%, 60%)",
+        border: "hsl(220, 15%, 88%)",
+        input: "hsl(220, 15%, 85%)",
+        ring: "hsl(210, 100%, 50%)",
         background: "hsl(0, 0%, 100%)",
-        foreground: "hsl(230, 15%, 15%)",
+        foreground: "hsl(220, 20%, 10%)",
         primary: {
-          DEFAULT: "hsl(250, 80%, 60%)",
+          DEFAULT: "hsl(210, 100%, 50%)",
           foreground: "hsl(0, 0%, 100%)",
-          hover: "hsl(250, 80%, 50%)",
-          active: "hsl(250, 80%, 40%)",
+          hover: "hsl(210, 100%, 45%)",
+          active: "hsl(210, 100%, 40%)",
         },
         secondary: {
-          DEFAULT: "hsl(250, 80%, 95%)",
-          foreground: "hsl(250, 80%, 30%)",
-          hover: "hsl(250, 80%, 90%)",
-          active: "hsl(250, 80%, 85%)",
+          DEFAULT: "hsl(210, 100%, 97%)",
+          foreground: "hsl(210, 100%, 30%)",
+          hover: "hsl(210, 100%, 95%)",
+          active: "hsl(210, 100%, 92%)",
         },
         tertiary: {
           DEFAULT: "hsl(0, 0%, 98%)",
           foreground: "hsl(230, 15%, 25%)",
         },
         accent: {
-          DEFAULT: "hsl(180, 70%, 45%)",
+          DEFAULT: "hsl(195, 85%, 50%)",
           foreground: "hsl(0, 0%, 100%)",
         },
         success: {
-          DEFAULT: "hsl(160, 70%, 40%)",
+          DEFAULT: "hsl(145, 65%, 45%)",
           foreground: "hsl(0, 0%, 100%)",
         },
         warning: {
-          DEFAULT: "hsl(40, 90%, 55%)",
-          foreground: "hsl(30, 15%, 20%)",
+          DEFAULT: "hsl(35, 95%, 55%)",
+          foreground: "hsl(0, 0%, 100%)",
         },
         error: {
           DEFAULT: "hsl(0, 80%, 60%)",
@@ -112,9 +112,12 @@ module.exports = {
         'ease-in-out': 'cubic-bezier(0.42, 0, 0.58, 1)',
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(135deg, hsl(250, 80%, 60%), hsl(260, 75%, 65%))',
-        'gradient-secondary': 'linear-gradient(135deg, hsl(250, 80%, 96%), hsl(250, 80%, 92%))',
-        'gradient-accent': 'linear-gradient(135deg, hsl(180, 70%, 50%), hsl(210, 70%, 55%))',
+        'gradient-primary': 'linear-gradient(135deg, hsl(210, 100%, 50%), hsl(195, 100%, 45%))',
+        'gradient-secondary': 'linear-gradient(135deg, hsl(210, 100%, 97%), hsl(210, 100%, 94%))',
+        'gradient-accent': 'linear-gradient(135deg, hsl(195, 85%, 50%), hsl(180, 80%, 50%))',
+      },
+      backdropBlur: {
+        xs: '2px',
       },
     },
   },

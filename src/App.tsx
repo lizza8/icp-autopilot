@@ -12,7 +12,7 @@ function App() {
   return (
     <Router>
       <AppProvider>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-cyan-50/20">
           <NavigationBar />
           <main className="pt-16">
             <Routes>

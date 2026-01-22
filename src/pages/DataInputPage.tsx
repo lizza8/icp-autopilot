@@ -103,9 +103,9 @@ const DataInputPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="space-y-8">
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-3 animate-fade-in-up">
           <div className="flex items-center justify-center gap-2">
-            <Sparkles className="w-8 h-8 text-primary" />
+            <Sparkles className="w-8 h-8 text-primary animate-float" />
             <h1 className="text-h1 font-semibold text-foreground">Discover Your ICP</h1>
           </div>
           <p className="text-body-lg text-gray-600 max-w-2xl mx-auto">
@@ -118,10 +118,10 @@ const DataInputPage: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card
-            className={`p-8 border-2 transition-all duration-normal ${
+            className={`p-8 border-2 transition-all duration-normal animate-fade-in-up delay-100 ${
               dragActive
-                ? 'border-primary bg-secondary/50'
-                : 'border-border bg-background hover:shadow-lg'
+                ? 'border-primary bg-secondary/50 scale-105'
+                : 'border-border bg-background hover:shadow-xl hover:scale-105 hover:border-primary/30'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -160,7 +160,7 @@ const DataInputPage: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="p-8 border border-border bg-background">
+          <Card className="p-8 border border-border bg-background animate-fade-in-up delay-200 hover:shadow-xl hover:scale-105 transition-all duration-normal">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
@@ -192,11 +192,11 @@ const DataInputPage: React.FC = () => {
           </Card>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center animate-fade-in-up delay-300">
           <Button
             onClick={handleSubmit}
             disabled={emailCount === 0}
-            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-50 hover:scale-105 transition-all duration-normal hover:shadow-xl"
           >
             Start Enrichment & Analysis
           </Button>

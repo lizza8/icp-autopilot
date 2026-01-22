@@ -17,7 +17,7 @@ const NavigationBar: React.FC = () => {
   const currentStep = steps.find((s) => s.path === location.pathname);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link to="/input" className="text-h3 font-semibold text-foreground">
@@ -31,15 +31,15 @@ const NavigationBar: React.FC = () => {
                 <Link
                   key={step.path}
                   to={step.path}
-                  className={`text-body-sm font-normal transition-colors duration-fast relative pb-1 ${
+                  className={`text-body-sm font-normal transition-all duration-fast relative pb-1 ${
                     isActive
                       ? 'text-primary'
-                      : 'text-gray-600 hover:text-primary-hover'
+                      : 'text-gray-600 hover:text-primary-hover hover:scale-105'
                   }`}
                 >
                   {step.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-primary" />
+                    <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-primary rounded-full animate-scale-in" />
                   )}
                 </Link>
               );

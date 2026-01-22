@@ -138,7 +138,7 @@ const ICPResultsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="space-y-12">
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 animate-fade-in-up">
           <h1 className="text-h1 font-semibold text-foreground">Your Ideal Customer Profiles</h1>
           <p className="text-body-lg text-gray-600 max-w-3xl mx-auto">
             Based on {state.enrichedData.length} enriched contacts, AI has identified the customer segments most likely to convert and deliver long-term value
@@ -206,9 +206,10 @@ const ICPResultsPage: React.FC = () => {
           {state.icpResults.map((icp, index) => (
             <Card
               key={icp.id}
-              className={`p-8 bg-background border transition-all duration-normal hover:shadow-xl hover:-translate-y-1 ${
-                icp.isTop ? 'border-primary border-2 shadow-lg' : 'border-border'
+              className={`p-8 bg-background border transition-all duration-normal hover:shadow-2xl hover:-translate-y-2 animate-scale-in ${
+                icp.isTop ? 'border-primary border-2 shadow-xl animate-pulse-glow' : 'border-border'
               }`}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="space-y-6">
                 {icp.isTop && (
@@ -246,8 +247,8 @@ const ICPResultsPage: React.FC = () => {
                       />
                       <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="hsl(250, 80%, 60%)" />
-                          <stop offset="100%" stopColor="hsl(260, 75%, 65%)" />
+                          <stop offset="0%" stopColor="hsl(210, 100%, 50%)" />
+                          <stop offset="100%" stopColor="hsl(195, 100%, 45%)" />
                         </linearGradient>
                       </defs>
                     </svg>
@@ -301,10 +302,10 @@ const ICPResultsPage: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center animate-fade-in-up">
           <Button
             onClick={() => navigate('/actions')}
-            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover"
+            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover hover:scale-105 transition-all duration-normal hover:shadow-xl"
           >
             Activate These ICPs
           </Button>

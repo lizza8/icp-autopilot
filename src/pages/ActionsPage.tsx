@@ -140,7 +140,7 @@ const ActionsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="space-y-12">
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 animate-fade-in-up">
           <h1 className="text-h1 font-semibold text-foreground">Activate Your ICP Strategy</h1>
           <p className="text-body-lg text-gray-600 max-w-3xl mx-auto">
             Turn insights into action with these recommended next steps across your go-to-market teams
@@ -153,14 +153,18 @@ const ActionsPage: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          {sections.map((section) => {
+          {sections.map((section, sectionIndex) => {
             const isExpanded = expandedSections.includes(section.id);
             const sectionActiveCount = section.actions.filter(
               (action) => state.activatedActions[action.id]
             ).length;
 
             return (
-              <Card key={section.id} className="bg-background border border-border overflow-hidden">
+              <Card 
+                key={section.id} 
+                className="bg-background border border-border overflow-hidden animate-fade-in-up hover:shadow-lg transition-all duration-normal"
+                style={{ animationDelay: `${sectionIndex * 0.1}s` }}
+              >
                 <button
                   onClick={() => toggleSection(section.id)}
                   className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors duration-fast"
@@ -214,17 +218,17 @@ const ActionsPage: React.FC = () => {
           })}
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up">
           <Button
             onClick={handleActivateAll}
-            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover"
+            className="h-12 px-8 bg-gradient-primary text-primary-foreground hover:bg-primary-hover hover:scale-105 transition-all duration-normal hover:shadow-xl"
           >
             Activate All Actions
           </Button>
           <Button
             onClick={() => navigate('/icp-results')}
             variant="outline"
-            className="h-12 px-8 bg-background text-foreground border-border hover:bg-gray-100"
+            className="h-12 px-8 bg-background text-foreground border-border hover:bg-gray-100 hover:scale-105 transition-all duration-normal"
           >
             Back to ICP Results
           </Button>
